@@ -1,6 +1,7 @@
 {
   "name": "pastebin-lite",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,3 +13,4 @@
     "react-dom": "18.2.0"
   }
 }
+
