@@ -1,15 +1,42 @@
-import React from "react";
+"use client";
 
-export default async function PastePage({ params }: { params: { id: string } }) {
-  const res = await fetch(`/api/pastes/${params.id}`);
-  if (!res.ok) return <h1>Paste not found or expired</h1>;
+import { useEffect, useState } from "react";
 
-  const data = await res.json();
+export default function ViewPaste({ params }: { params: { id: string } }) {
+  const [content, setContent] = useState<string | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchPaste = async () => {
+      try {
+        const res = await fetch(`/api/pastes/${params.id}`);
+        if (!res.ok) throw new Error("Paste not found or expired");
+        const data = await res.json();
+        setContent(data.content);
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+    fetchPaste();
+  }, [params.id]);
 
   return (
-    <div>
-      <h1>Paste ID: {params.id}</h1>
-      <pre>{data.content}</pre>
+    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {content && (
+        <>
+          <h2>Paste Content</h2>
+          <pre
+            style={{
+              backgroundColor: "#f5f5f5",
+              padding: "1rem",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {content}
+          </pre>
+        </>
+      )}
     </div>
   );
 }
